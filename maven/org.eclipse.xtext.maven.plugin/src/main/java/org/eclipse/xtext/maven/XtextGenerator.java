@@ -136,18 +136,32 @@ public class XtextGenerator extends AbstractMojo {
 	 * 
 	 * @see org.apache.maven.plugin.Mojo#execute()
 	 */
-	public void execute() throws MojoExecutionException, MojoFailureException {
+	public void execute() throws MojoExecutionException, MojoFailureException {                
+            getLog().info("I'm a custom build by Patrick.");
+            if (skip) {
+                    getLog().info("skipped.");
+            } else {
+                XtextGenerator generator = new XtextGenerator();
                 synchronized( lock)
                 {
-         
-                    if (skip) {
-                            getLog().info("skipped.");
-                    } else {
-                            new MavenLog4JConfigurator().configureLog4j(getLog());
-                            configureDefaults();
-                            internalExecute();
-                    }
+                    new MavenLog4JConfigurator().configureLog4j(getLog());                    
+                    generator.classPathLookupFilter = this.classPathLookupFilter;
+                    generator.classpathElements = this.classpathElements;
+                    generator.clusteringConfig = this.clusteringConfig;
+                    generator.compilerSourceLevel = this.compilerSourceLevel;
+                    generator.compilerTargetLevel = this.compilerTargetLevel;
+                    generator.encoding = this.encoding;
+                    generator.failOnValidationError = this.failOnValidationError;
+                    generator.javaSourceRoots = this.javaSourceRoots;
+                    generator.languages = this.languages;
+                    generator.project = this.project;
+                    generator.skip = this.skip;
+                    generator.sourceRoots = this.sourceRoots;
+                    generator.tmpClassDirectory = this.tmpClassDirectory;                    
                 }
+                generator.configureDefaults();
+                generator.internalExecute();
+            }
 	}
 
 	protected void internalExecute() throws MojoExecutionException, MojoFailureException {
