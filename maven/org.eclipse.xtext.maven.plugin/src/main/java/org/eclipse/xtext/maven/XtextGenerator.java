@@ -36,6 +36,9 @@ import com.google.inject.Injector;
  * @requiresDependencyResolution compile
  */
 public class XtextGenerator extends AbstractMojo {
+    
+        private static final Object lock = new Object();
+    
 
 	/**
 	 * Location of the generated source files.
@@ -134,13 +137,17 @@ public class XtextGenerator extends AbstractMojo {
 	 * @see org.apache.maven.plugin.Mojo#execute()
 	 */
 	public void execute() throws MojoExecutionException, MojoFailureException {
-		if (skip) {
-			getLog().info("skipped.");
-		} else {
-			new MavenLog4JConfigurator().configureLog4j(getLog());
-			configureDefaults();
-			internalExecute();
-		}
+                synchronized( lock)
+                {
+         
+                    if (skip) {
+                            getLog().info("skipped.");
+                    } else {
+                            new MavenLog4JConfigurator().configureLog4j(getLog());
+                            configureDefaults();
+                            internalExecute();
+                    }
+                }
 	}
 
 	protected void internalExecute() throws MojoExecutionException, MojoFailureException {
